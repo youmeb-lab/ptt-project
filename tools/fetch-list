@@ -1,0 +1,35 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+'''
+    抓取文章連結
+
+    Options:
+        --stop=<string>   終止文章網址/ID
+'''
+
+from puppet import puppet
+from ptt_crawler import Board
+
+puppet('fetch-list', '0.1.0')
+
+
+def main(program):
+    argc = len(program.args)
+
+    if argc > 0:
+        board_name = program.args[0]
+        board = Board(board_name)
+        stop_id = program.args[1] if argc > 1 else None
+        fetch_list(board, stop_id)
+
+
+def fetch_list(board, stop_id):
+    for article in board.articles():
+        if stop_id == article.id:
+            break
+        print(article.url)
+
+
+def finish(conn, data):
+    print(data)

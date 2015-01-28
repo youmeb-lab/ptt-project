@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+
+var co = require('co');
+var util = require('util');
+var nsq = require('nsq.js');
+var argv = require('optimist').argv;
+var nsqStream = require('nsq-stream');
+var spawn = require('child_process').spawn;
+var Transform = require('stream').Transform;
+var LineStream = require('byline').LineStream;
+var ToString = require('../lib/to-string');
+
+co(main)
+  .then(success)
+  .catch(failed);
+
+function *main() {
+  var cmd = argv._[0];
+  var args = process.argv.slice(2);
+  args = fileter(args, cmd);
+
+  if (cmd) {
+    var child = spawn(cmd, args, {
+      stdio: [0, 'pipe', 0]
+    });
+    var out = createWriter();
+    child.stdout.pipe(out);
+    yield wait(out)
+  }
+}
+
+function success() {
+  console.log('='.repeat(80));
+  console.log('done!');
+}
+
+function failed(e) {
+  console.log('='.repeat(80));
+  console.log(e.stack);
+}
+
+function createWriter() {
+  var writer = nsq.writer(argv.nsqd);
+  var topic = argv.topic || 'undefined';
+  var writeStream = nsqStream.createWriteStream(writer, topic);
+
+  return ToString()
+    .pipe(new LineStream())
+    .pipe(writeStream);
+}
+
+function fileter(args, cmd) {
+  var i = 0;
+  var len = args.length;
+
+  for (i = 0; i < len; i += 1) {
+    if (!/^-/.test(args[i])) {
+      break;
+    }
+  }
+
+  args = args.slice(i);
+
+  return args[0] === cmd
+    ? args.slice(1)
+    : args;
+}
+
+function wait(stream) {
+  return function (cb) {
+    stream.on('error', cb);
+    stream.on('finish', cb);
+  };
+}

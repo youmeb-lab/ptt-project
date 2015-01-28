@@ -1,0 +1,26 @@
+{
+  "name": "ptt-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/youmeb-lab/ptt-project.git"
+  },
+  "author": "Po-Ying Chen <poying.me@gmail.com> (陳柏穎)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/youmeb-lab/ptt-project/issues"
+  },
+  "homepage": "https://github.com/youmeb-lab/ptt-project",
+  "dependencies": {
+    "byline": "^4.1.1",
+    "co": "^4.1.0",
+    "nsq-stream": "^2.0.0",
+    "nsq.js": "^0.12.6",
+    "optimist": "^0.6.1"
+  }
+}

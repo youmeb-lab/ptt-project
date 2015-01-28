@@ -1,4 +1,3 @@
-pynsq
-clime
-tornado
+puppet
 ptt-crawler
+python-dateutil
